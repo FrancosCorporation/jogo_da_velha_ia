@@ -1,4 +1,3 @@
-package partePrincipal;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -6,6 +5,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.Random;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,13 +14,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-public class JogoDaVelha extends JFrame {
-	ImageIcon iconCirculo = new ImageIcon(getClass().getResource("brl.png"));
-	ImageIcon iconX = new ImageIcon(getClass().getResource("xis.png"));
+public class JogoDaVelhaAtualizado extends JFrame {
+	ImageIcon iconCirculo = new ImageIcon(getClass().getResource("/partePrincipal/bola.png"));
+	ImageIcon iconX = new ImageIcon(getClass().getResource("/partePrincipal/x.png"));
 
 	JPanel pTela = new JPanel(new GridLayout(3, 3, 10, 10));
 
 	Bloco[] blocos = new Bloco[9];
+
+	// private int[][] winCombinations = { { 1, 2, 3 }, { 1, 4, 7 }, { 1, 5, 9 }, {
+	// 2, 5, 8 }, { 3, 6, 9 }, { 3, 5, 7 },{ 4, 5, 6 }, { 7, 8, 9 } };
 
 	int rodadas = 0;
 
@@ -32,17 +35,17 @@ public class JogoDaVelha extends JFrame {
 
 	JLabel lInformacao = new JLabel("Jogador " + JOGADOR_1);
 
-	public JogoDaVelha() {
-		boolean resp = retornapergunta("Voce deseja Jogar contra Alguem ou Sozinho?", "Player Vs Pc",
-				"Player Vs Player");
+	public JogoDaVelhaAtualizado() {
+		boolean resp = retornapergunta("Voce deseja Jogar contra Alguem ou Sozinho?", "Player Vs Player",
+		"Player Vs Pc");
 		if (resp) {
 			configurarJanela();
 			configurarTela();
-			contra = 2;
+			contra = 1;
 		} else {
 			configurarJanela();
 			configurarTela();
-			contra = 1;
+			contra = 2;
 
 		}
 
@@ -105,13 +108,13 @@ public class JogoDaVelha extends JFrame {
 	public void configurarJanela() {
 		setTitle("Jogo da Velha");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setSize(600, 600);
+		setSize(650, 600);
 		setLocationRelativeTo(null);
 		setVisible(true);
 	}
 
 	public static void main(String[] args) {
-		new JogoDaVelha();
+		new JogoDaVelhaAtualizado();
 		if (contra == 2) {
 		} else {
 
@@ -122,40 +125,21 @@ public class JogoDaVelha extends JFrame {
 		int quem = 0;
 
 		public Bloco() {
-			setBackground(Color.WHITE);
+			setBackground(Color.CYAN);
 			addActionListener(e -> {
+				//setando player contra PC
 				if (contra == 1) {
-					if (quem == 0) {
-						if (jogadorVez == JOGADOR_1) {
-							setIcon(iconCirculo);
-							quem = JOGADOR_1;
-						} else {
-							setIcon(iconX);
-							quem = JOGADOR_2;
-						}
-						mudarVez();
-						if (testarVitoria(quem)) {
-							boolean resp = retornapergunta("Jogador " + quem + " Venceu!", "Restart", "Sair");
-							if (resp) {
-								if (quem == JOGADOR_1) {
-									mudarVez();
-								}
-								resetgame();
-
+					if (getIcon() == null) {
+						if (quem == 0) {
+							if (jogadorVez == JOGADOR_1) {
+								setIcon(iconCirculo);
+								quem = JOGADOR_1;
 							} else {
-								System.exit(0);
+								setIcon(iconX);
+								quem = JOGADOR_2;
 							}
-						}
-					}
-
-					rodadas++;
-				}
-				if (contra == 2) {
-
-						if (getIcon() == null) {
-							quem = JOGADOR_1;
-							setIcon(iconCirculo);
-							if (testarVitoria(JOGADOR_1)) {
+							mudarVez();
+							if (testarVitoria(quem)) {
 								boolean resp = retornapergunta("Jogador " + quem + " Venceu!", "Restart", "Sair");
 								if (resp) {
 									resetgame();
@@ -164,22 +148,57 @@ public class JogoDaVelha extends JFrame {
 									System.exit(0);
 								}
 							}
-							inteligenciaAtificial();
-							if (testarVitoria(JOGADOR_2)) {
-								boolean resp = retornapergunta("Jogador " + JOGADOR_2 + " Venceu!", "Restart", "Sair");
-								if (resp) {
-									resetgame();
+						}
 
-								} else {
-									System.exit(0);
-								}
+						rodadas++;
+						if (rodadas >= 9) {
+							boolean resp = retornapergunta("Deu velha!", "Restart", "Sair");
+							if (resp) {
+								resetgame();
+							} else {
+								System.exit(0);
 							}
-							rodadas++;
+						}
+					} else {
+						JOptionPane.showMessageDialog(null, "Movimento Indisponivel !", "Confirme que entendeu !",
+								JOptionPane.WARNING_MESSAGE);
+						return;
+					}
+				}
+				//setando player contra player
+				if (contra == 2) {
 
-							if (rodadas >= 9) {
+					if (getIcon() == null) {
+						quem = JOGADOR_1;
+						setIcon(iconCirculo);
+						if (testarVitoria(JOGADOR_1)) {
+							boolean resp = retornapergunta("Jogador " + quem + " Venceu!", "Restart", "Sair");
+							if (resp) {
+								setIcon(null);
+								resetgame();
+
+							} else {
+								System.exit(0);
+							}
+						}
+						inteligenciaAtificial();
+						if (testarVitoria(JOGADOR_2)) {
+							boolean resp = retornapergunta("Jogador " + JOGADOR_2 + " Venceu!", "Restart", "Sair");
+							if (resp) {
+								setIcon(null);
+								resetgame();
+
+							} else {
+								System.exit(0);
+							}
+						}
+						rodadas++;
+
+						if (rodadas >= 9) {
 							boolean resp = retornapergunta("Deu velha!", "Restart", "Sair");
 							if (resp) {
 								if (quem == JOGADOR_1) {
+									setIcon(null);
 									mudarVez();
 								}
 								resetgame();
@@ -187,6 +206,12 @@ public class JogoDaVelha extends JFrame {
 								System.exit(0);
 							}
 						}
+						
+					}
+					else {
+						JOptionPane.showMessageDialog(null, "Movimento Indisponivel !", "Confirme que entendeu !",
+								JOptionPane.WARNING_MESSAGE);
+						return;
 					}
 				}
 
@@ -195,9 +220,9 @@ public class JogoDaVelha extends JFrame {
 
 	}
 
-	public boolean retornapergunta(String message, String botao1, String botao2) {
+	public boolean retornapergunta(String message, String botaoTrue, String botaoFalse) {
 		boolean resposta = false;
-		Object[] options = { botao1, botao2 };
+		Object[] options = { botaoTrue, botaoFalse };
 		int op = JOptionPane.showOptionDialog(null, message, "Atenção", JOptionPane.DEFAULT_OPTION,
 				JOptionPane.WARNING_MESSAGE, null, options, 0);
 		if (op == 0) {
@@ -213,7 +238,7 @@ public class JogoDaVelha extends JFrame {
 		rodadas = 0;
 		pTela.removeAll();
 		dispose();
-		new JogoDaVelha();
+		new JogoDaVelhaAtualizado();
 	}
 
 	public int inteligenciaAtificial() {
@@ -222,7 +247,7 @@ public class JogoDaVelha extends JFrame {
 			boolean resp = retornapergunta("Deu velha!", "Restart", "Sair");
 			if (resp) {
 				resetgame();
-				
+
 			} else {
 				System.exit(0);
 			}
@@ -230,91 +255,74 @@ public class JogoDaVelha extends JFrame {
 		if (blocos[0].quem == JOGADOR_2 && blocos[1].quem == JOGADOR_2 && blocos[2].getIcon() == null) {
 			blocos[2].quem = JOGADOR_2;
 			blocos[2].setIcon(iconX);
-			// setando icone quando clicado no primeiro e terceiro quadrante
 			return 0;
 		} else if (blocos[5].quem == JOGADOR_2 && blocos[4].quem == JOGADOR_2 && blocos[3].quem == JOGADOR_1
 				&& blocos[1].getIcon() == null) {
 			blocos[1].quem = JOGADOR_2;
 			blocos[1].setIcon(iconX);
-			// setando icone quando clicado no primeiro e terceiro quadrante
 			return 0;
 		} else if (blocos[3].quem == JOGADOR_2 && blocos[4].quem == JOGADOR_2 && blocos[5].quem == JOGADOR_1
 				&& blocos[2].getIcon() == null) {
 			blocos[2].quem = JOGADOR_2;
 			blocos[2].setIcon(iconX);
-			// setando icone quando clicado no primeiro e terceiro quadrante
 			return 0;
 		} else if (blocos[1].quem == JOGADOR_2 && blocos[4].quem == JOGADOR_2 && blocos[7].getIcon() == null) {
 			blocos[7].quem = JOGADOR_2;
 			blocos[7].setIcon(iconX);
-			// setando icone quando clicado no primeiro e terceiro quadrante
 			return 0;
 		} else if (blocos[6].quem == JOGADOR_2 && blocos[4].quem == JOGADOR_2 && blocos[2].getIcon() == null) {
 			blocos[2].quem = JOGADOR_2;
 			blocos[2].setIcon(iconX);
-			// setando icone quando clicado no primeiro e terceiro quadrante
 			return 0;
 		} else if (blocos[3].quem == JOGADOR_2 && blocos[4].quem == JOGADOR_2 && blocos[1].quem == JOGADOR_1
 				&& blocos[7].getIcon() == null) {
 			blocos[7].quem = JOGADOR_2;
 			blocos[7].setIcon(iconX);
-			// setando icone quando clicado no primeiro e terceiro quadrante
 			return 0;
 		} else if (blocos[3].quem == JOGADOR_2 && blocos[4].quem == JOGADOR_2 && blocos[5].quem == JOGADOR_1
 				&& blocos[2].getIcon() == null) {
 			blocos[2].quem = JOGADOR_2;
 			blocos[2].setIcon(iconX);
-			// setando icone quando clicado no primeiro e terceiro quadrante
 			return 0;
 		} else if (blocos[0].quem == JOGADOR_2 && blocos[4].quem == JOGADOR_2 && blocos[8].getIcon() == null) {
 			blocos[8].quem = JOGADOR_2;
 			blocos[8].setIcon(iconX);
-			// setando icone quando clicado no primeiro e terceiro quadrante
 			return 0;
 		} else if (blocos[8].quem == JOGADOR_2 && blocos[4].quem == JOGADOR_2 && blocos[0].getIcon() == null) {
 			blocos[0].quem = JOGADOR_2;
 			blocos[0].setIcon(iconX);
-			// setando icone quando clicado no primeiro e terceiro quadrante
 			return 0;
 		} else if (blocos[2].quem == JOGADOR_2 && blocos[4].quem == JOGADOR_2 && blocos[6].getIcon() == null) {
 			blocos[6].quem = JOGADOR_2;
 			blocos[6].setIcon(iconX);
-			// setando icone quando clicado no primeiro e terceiro quadrante
 			return 0;
 		} else if (blocos[7].quem == JOGADOR_2 && blocos[8].quem == JOGADOR_2 && blocos[6].getIcon() == null) {
 			blocos[6].quem = JOGADOR_2;
 			blocos[6].setIcon(iconX);
-			// setando icone quando clicado no primeiro e terceiro quadrante
 			return 0;
 		} else if (blocos[0].quem == JOGADOR_2 && blocos[3].quem == JOGADOR_2 && blocos[6].getIcon() == null) {
 			blocos[6].quem = JOGADOR_2;
 			blocos[6].setIcon(iconX);
-			// setando icone quando clicado no primeiro e terceiro quadrante
 			return 0;
 		} else if (blocos[0].quem == JOGADOR_2 && blocos[4].quem == JOGADOR_2 && blocos[8].getIcon() == null) {
 			blocos[8].quem = JOGADOR_2;
 			blocos[8].setIcon(iconX);
-			// setando icone quando clicado no primeiro e terceiro quadrante
 			return 0;
 		} else if (blocos[6].quem == JOGADOR_2 && blocos[7].quem == JOGADOR_2 && blocos[8].getIcon() == null) {
 			blocos[8].quem = JOGADOR_2;
 			blocos[8].setIcon(iconX);
-			// setando icone quando clicado no primeiro e terceiro quadrante
 			return 0;
 		} else if (blocos[6].quem == JOGADOR_2 && blocos[8].quem == JOGADOR_2 && blocos[7].getIcon() == null) {
 			blocos[7].quem = JOGADOR_2;
 			blocos[7].setIcon(iconX);
-			// setando icone quando clicado no primeiro e terceiro quadrante
 			return 0;
 		} else if (blocos[1].quem == JOGADOR_2 && blocos[2].quem == JOGADOR_2 && blocos[0].getIcon() == null) {
 			blocos[0].quem = JOGADOR_2;
 			blocos[0].setIcon(iconX);
-			// setando icone quando clicado no primeiro e terceiro quadrante
 			return 0;
 		} else if (blocos[0].quem == JOGADOR_2 && blocos[2].quem == JOGADOR_2 && blocos[1].getIcon() == null) {
 			blocos[1].quem = JOGADOR_2;
 			blocos[1].setIcon(iconX);
-			// setando icone quando clicado no primeiro e terceiro quadrante
 			return 0;
 		} else if (blocos[0].quem == JOGADOR_1 && blocos[1].quem == JOGADOR_1 && blocos[2].getIcon() == null) {
 			blocos[2].quem = JOGADOR_2;
@@ -324,27 +332,22 @@ public class JogoDaVelha extends JFrame {
 		} else if (blocos[3].quem == JOGADOR_2 && blocos[4].quem == JOGADOR_2 && blocos[5].getIcon() == null) {
 			blocos[5].quem = JOGADOR_2;
 			blocos[5].setIcon(iconX);
-			// setando icone quando clicado no primeiro e terceiro quadrante
 			return 0;
 		} else if (blocos[4].quem == JOGADOR_2 && blocos[5].quem == JOGADOR_2 && blocos[3].getIcon() == null) {
 			blocos[3].quem = JOGADOR_2;
 			blocos[3].setIcon(iconX);
-			// setando icone quando clicado no primeiro e terceiro quadrante
 			return 0;
 		} else if (blocos[0].quem == JOGADOR_2 && blocos[6].quem == JOGADOR_2 && blocos[3].getIcon() == null) {
 			blocos[3].quem = JOGADOR_2;
 			blocos[3].setIcon(iconX);
-			// setando icone quando clicado no primeiro e terceiro quadrante
 			return 0;
 		} else if (blocos[0].quem == JOGADOR_1 && blocos[2].quem == JOGADOR_1 && blocos[1].getIcon() == null) {
 			blocos[1].quem = JOGADOR_2;
 			blocos[1].setIcon(iconX);
-			// setando icone quando clicado no primeiro e terceiro quadrante
 			return 0;
 		} else if (blocos[1].quem == JOGADOR_1 && blocos[2].quem == JOGADOR_1 && blocos[0].getIcon() == null) {
 			blocos[0].quem = JOGADOR_2;
 			blocos[0].setIcon(iconX);
-			// setando icone quando clicado no primeiro e terceiro quadrante
 			return 0;
 		} else if (blocos[4].quem == JOGADOR_1 && blocos[5].quem == JOGADOR_1 && blocos[3].getIcon() == null) {
 			blocos[3].quem = JOGADOR_2;
@@ -530,7 +533,7 @@ public class JogoDaVelha extends JFrame {
 			blocos[5].setIcon(iconX);
 			return 0;
 			// diagonal
-		}else if (blocos[2].quem == JOGADOR_1 && blocos[3].quem == JOGADOR_1 && blocos[4].quem == JOGADOR_2
+		} else if (blocos[2].quem == JOGADOR_1 && blocos[3].quem == JOGADOR_1 && blocos[4].quem == JOGADOR_2
 				&& blocos[0].getIcon() == null) {
 			blocos[0].quem = JOGADOR_2;
 			blocos[0].setIcon(iconX);

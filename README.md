@@ -1,5 +1,25 @@
 # Jogo da Velha IA
 
+## 🐳 Instalação e Execução (Docker) — recomendado
+
+### Pré-requisitos
+- [Docker](https://docs.docker.com/get-docker/) + Docker Compose
+
+### Rodar com Docker
+```bash
+docker compose up --build
+```
+```bash
+docker run --rm -v $(pwd):/src -w /src eclipse-temurin:17 sh -c 'javac -d out $(find src -name "*.java") && java -cp out Teste'
+```
+
+### Sem Docker (local)
+```bash
+# Requer JDK
+javac -d out $(find src -name '*.java')
+java -cp out Teste
+```
+
 Jogo da velha com interface gráfica em Java Swing e oponente controlado por uma IA de regras — **projeto de estudo** (2022).
 
 ![Java](https://img.shields.io/badge/Java-12-orange?logo=openjdk&logoColor=white)

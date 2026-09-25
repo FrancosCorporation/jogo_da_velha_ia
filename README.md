@@ -1,91 +1,98 @@
 # Jogo da Velha IA
 
-## 🐳 Instalação e Execução (Docker) — recomendado
-
-### Pré-requisitos
-- [Docker](https://docs.docker.com/get-docker/) + Docker Compose
-
-### Rodar com Docker
-```bash
-docker compose up --build
-```
-```bash
-docker run --rm -v $(pwd):/src -w /src eclipse-temurin:17 sh -c 'javac -d out $(find src -name "*.java") && java -cp out Teste'
-```
-
-### Sem Docker (local)
-```bash
-# Requer JDK
-javac -d out $(find src -name '*.java')
-java -cp out Teste
-```
-
-Jogo da velha com interface gráfica em Java Swing e oponente controlado por uma IA de regras — **projeto de estudo** (2022).
-
-![Java](https://img.shields.io/badge/Java-12-orange?logo=openjdk&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES2022-yellow?logo=javascript&logoColor=white)
+![Node](https://img.shields.io/badge/node-%3E%3D18-green?logo=node.js&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-green)
-![Status](https://img.shields.io/badge/status-conclu%C3%ADdo%20(estudo)-blue)
+![Status](https://img.shields.io/badge/status-ativo%20(vers%C3%A3o%20web)-blue)
+![Tests](https://img.shields.io/badge/testes-11%2F11%20passando-brightgreen)
 
-## Sobre
+Jogo da Velha no navegador com **três modos de jogo** e **duas IAs** — versão web (2026) do projeto
+Java/Swing de 2022, com os fontes originais preservados em [`java/`](java/).
 
-Projeto de estudo desenvolvido em 2022 para praticar **Java Swing**, eventos, lógica de jogos e uma
-primeira noção de **inteligência artificial baseada em regras**. O jogador pode escolher entre
-**Player vs Player** (dois jogadores no mesmo teclado/mouse) ou **Player vs PC**, no qual o computador
-escolhe as jogadas sozinho.
+**Jogar online:** https://francoscorporation.github.io/jogo_da_velha_ia/
 
-> Importante: a IA implementada aqui é **heurística**, baseada em uma sequência de verificações
-> "ataque/bloqueio" (o computador fecha a própria linha de vitória e bloqueia as do adversário).
-> O código **não** usa minimax — o `README.md` antigo deste repositório continha apenas um trecho de
-> código de terceiros colado de um blog, sem relação com os fontes deste projeto.
+## Modos de jogo
+
+| Modo | Oponente | IA |
+|---|---|---|
+| **Player vs Player** | Outra pessoa no mesmo dispositivo | — |
+| **Player vs PC** | Computador com IA heurística de regras (ataca, bloqueia, ocupa o centro) | `js/ai-heuristica.js` |
+| **Impossível (Minimax)** | Computador imbatível com minimax clássico + placar de sessão | `js/ai-minimax.js` |
+
+## Instalação e execução
+
+Requer [Node.js 18+](https://nodejs.org/). Sem dependências externas — o projeto roda com Node puro:
+
+```bash
+npm install   # no-op (zero dependências), mantido por convenção
+npm start     # abre o servidor em http://localhost:3000
+npm test      # roda os 11 testes de lógica (vitórias, empate, IAs, minimax imbatível)
+```
+
+Depois abra **http://localhost:3000** no navegador.
+
+> Alternativa sem Node: abra `index.html` num servidor estático qualquer (Python `http.server`,
+> Live Server do VS Code, nginx...) — a versão web é 100% estática (HTML/CSS/JS).
 
 ## Funcionalidades
 
-- Tabuleiro 3×3 clicável com imagens (`src/partePrincipal/bola.png` e `x.png`).
-- Modo **Player vs Player** e modo **Player vs PC** (escolhidos em diálogo na abertura).
-- IA por regras: fecha linhas de vitória do computador e bloqueia as jogadas do adversário.
-- Detecção de vitória e de empate ("deu velha"), com diálogo de reinício.
-- Indicador de vez do jogador no topo da janela.
-- Três versões/iterações do jogo no mesmo repositório (`JogoDaVelhaAntigo`, `JogoDaVelhaAtualizado`,
-  `JogoDaVelhaImplementando`) e uma classe de teste (`Teste`).
-- Na versão `JogoDaVelhaImplementando` há menu para **alterar o nome dos jogadores**.
+- Tabuleiro 3×3 clicável com as imagens originais do projeto Java (`img/bola.png` e `img/x.png`).
+- Diálogo inicial escolhendo o modo (PvP, vs PC, Impossível) — fiel ao `JOptionPane` original.
+- Indicador de vez no topo com as cores do original (Jogador 1 verde, Jogador 2 vermelho).
+- Aviso "Movimento Indisponível!" ao clicar em casa ocupada (como no Java).
+- Detecção de vitória (com destaque da linha vencedora) e empate ("Deu velha!").
+- Modo Impossível com **placar de sessão** (vitórias/empates/derrotas), como no `Teste.java`.
+- IA heurística portada 1:1 do `JogoDaVelhaAtualizado.java`, com **correção do bug original**
+  (o sorteio de canto agora só escolhe casas vazias — o Java podia sobrescrever uma jogada).
+- Design responsivo (desktop e celular).
 
-## Stack
+## História e arquitetura
 
-- **Java 12** (projeto Eclipse `JavaSE-12`).
-- **Java Swing / AWT** (`JFrame`, `JButton`, `JPanel`, `GridLayout`, `ImageIcon`, `JOptionPane`).
-- Sem dependências externas.
-
-## Como rodar
-
-Requer JDK 12+ instalado. Não há build automatizado (Maven/Gradle) — o projeto é Eclipse puro.
-
-Via linha de comando, a partir da raiz do repositório:
-
-```bash
-javac -d bin src/*.java
-java -cp bin:src JogoDaVelhaAtualizado
-```
-
-> O `src` entra no classpath porque as imagens são carregadas como recurso
-> (`getClass().getResource("/partePrincipal/bola.png")`) e permanecem em `src/partePrincipal/`.
-> No Windows, use `-cp "bin;src"`.
-
-Outras classes com `main` (versões alternativas): `JogoDaVelhaAntigo`, `JogoDaVelhaImplementando`, `Teste`.
-A versão mais completa é `JogoDaVelhaAtualizado`.
-
-## Estrutura do projeto
+Este repositório começou em 2022 como projeto de estudo **Java Swing** (Eclipse, JavaSE-12) para
+praticar eventos, lógica de jogos e IA baseada em regras. Em 2026 foi convertido para JavaScript
+puro, mantendo o comportamento fiel:
 
 ```
 jogo_da_velha_ia/
-├── src/
-│   ├── JogoDaVelhaAtualizado.java       # versão mais completa (recomendada)
-│   ├── JogoDaVelhaAntigo.java           # primeira versão do jogo
-│   ├── JogoDaVelhaImplementando.java    # versão com menu de nomes dos jogadores
-│   ├── Teste.java                       # classe de testes/experimentos
-│   └── partePrincipal/                  # imagens do tabuleiro (bola/x)
-├── .classpath / .project                # configuração Eclipse
-└── README.md
+├── index.html                 # UI (grid 3×3, HUD de vez, modais)
+├── style.css                  # visual fiel ao Swing original (botões ciano)
+├── js/
+│   ├── app.js                 # fluxo do jogo (estados, turnos, fim de jogo)
+│   ├── ai-heuristica.js       # IA de regras (port do inteligenciaAtificial())
+│   └── ai-minimax.js          # minimax imbatível (port do Teste.java)
+├── test/logic-test.mjs        # 11 testes de lógica (npm test)
+├── img/                       # imagens originais do tabuleiro
+├── server.js                  # servidor estático em Node puro (sem deps)
+└── java/                      # ✔ PROJETO ORIGINAL 2022 preservado
+    ├── JogoDaVelhaAtualizado.java    # versão mais completa (origem da conversão)
+    ├── JogoDaVelhaAntigo.java        # primeira versão do jogo
+    ├── JogoDaVelhaImplementando.java # esboço com menu de nomes
+    ├── Teste.java                    # minimax de terceiros (origem do modo Impossível)
+    └── partePrincipal/               # imagens originais
 ```
+
+### Como rodar a versão Java original (histórica)
+
+```bash
+# Requer JDK 12+ (ou Docker: docker run --rm -v $(pwd):/src -w /src eclipse-temurin:17 ...)
+cd java
+javac -d bin *.java
+java -cp bin:. JogoDaVelhaAtualizado   # no Windows: -cp "bin;."
+```
+
+> A IA heurística dos fontes próprios **não** usa minimax — a versão original herdava um trecho
+> de terceiros (`Teste.java`, blog isjavado) apenas como referência. Na versão web, o minimax
+> virou um modo de jogo oficial: **Impossível**.
+
+## Testes
+
+```bash
+npm test
+```
+
+Cobertura: as 8 combinações de vitória para ambos os jogadores, empate, ataque/bloqueio/centro
+da heurística, correção do bug de sobrescrita, minimax imbatível em 300 partidas aleatórias e
+minimax vs minimax sempre empatando (jogo perfeito).
 
 ## Licença
 

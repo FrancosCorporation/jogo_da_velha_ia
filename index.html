@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jogo da Velha</title>
+  <meta name="description" content="Jogo da Velha com IA: modo Player vs Player, vs PC (heurística de regras) e Impossível (minimax). Versão web do projeto Java/Swing de 2022.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hud">
+    <h1 id="vez" class="vez vez-j1">Jogador 1</h1>
+  </header>
+
+  <main class="tabuleiro-wrap">
+    <div id="tabuleiro" class="tabuleiro" aria-label="Tabuleiro 3x3">
+      <button class="bloco" data-i="0" aria-label="Casa 1"></button>
+      <button class="bloco" data-i="1" aria-label="Casa 2"></button>
+      <button class="bloco" data-i="2" aria-label="Casa 3"></button>
+      <button class="bloco" data-i="3" aria-label="Casa 4"></button>
+      <button class="bloco" data-i="4" aria-label="Casa 5"></button>
+      <button class="bloco" data-i="5" aria-label="Casa 6"></button>
+      <button class="bloco" data-i="6" aria-label="Casa 7"></button>
+      <button class="bloco" data-i="7" aria-label="Casa 8"></button>
+      <button class="bloco" data-i="8" aria-label="Casa 9"></button>
+    </div>
+  </main>
+
+  <div id="toast" class="toast" hidden>Movimento Indisponível!</div>
+
+  <div id="modal-inicio" class="modal" role="dialog" aria-modal="true" aria-labelledby="titulo-inicio">
+    <div class="modal-caixa">
+      <h2 id="titulo-inicio">Escolha o modo de jogo</h2>
+      <button id="btn-pvp" class="btn-modal">Player vs Player</button>
+      <button id="btn-pc" class="btn-modal">Player vs PC</button>
+      <button id="btn-impossivel" class="btn-modal">Impossível (Minimax)</button>
+    </div>
+  </div>
+
+  <div id="modal-fim" class="modal" role="dialog" aria-modal="true" aria-labelledby="titulo-fim">
+    <div class="modal-caixa">
+      <h2 id="titulo-fim">Jogador 1 Venceu!</h2>
+      <p id="placar" class="placar" hidden></p>
+      <button id="btn-restart" class="btn-modal">Restart</button>
+      <button id="btn-sair" class="btn-modal btn-perigo">Sair</button>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

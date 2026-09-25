@@ -1,0 +1,129 @@
+:root {
+  --ciano: #00e5ff;
+  --ciano-escuro: #00b8d4;
+  --verde: rgb(50, 200, 50);
+  --vermelho: rgb(220, 40, 40);
+  --fundo: #101418;
+  --carta: #1b2229;
+  --borda: #2c3742;
+  --texto: #e8edf2;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--fundo);
+  color: var(--texto);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 16px;
+}
+
+.hud { text-align: center; }
+
+.vez {
+  font-size: 35px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* Fiéis ao original: Jogador 1 verde, Jogador 2 vermelho (Arial Bold 35) */
+.vez-j1 { color: var(--verde); }
+.vez-j2 { color: var(--vermelho); }
+
+.tabuleiro {
+  display: grid;
+  grid-template-columns: repeat(3, 150px);
+  grid-template-rows: repeat(3, 150px);
+  gap: 10px;
+}
+
+.bloco {
+  background-color: var(--ciano);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: transform 0.08s ease, background-color 0.15s ease;
+}
+
+.bloco:hover:not(:disabled) { background-color: var(--ciano-escuro); transform: scale(1.03); }
+.bloco:disabled { cursor: default; }
+.bloco img { width: 70%; height: 70%; object-fit: contain; }
+
+.bloco.vencedor { outline: 5px solid gold; outline-offset: -5px; }
+
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #d35400;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.modal[hidden] { display: none; }
+
+.modal-caixa {
+  background: var(--carta);
+  border: 1px solid var(--borda);
+  border-radius: 14px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 320px;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+
+.modal-caixa h2 { font-size: 26px; }
+
+.placar { color: #9fb2c3; font-size: 16px; }
+
+.btn-modal {
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 8px;
+  background: var(--ciano);
+  color: #00232a;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.btn-modal:hover { background: var(--ciano-escuro); }
+.btn-perigo { background: var(--vermelho); color: #fff; }
+.btn-perigo:hover { background: #a02020; }
+
+@media (max-width: 520px) {
+  .tabuleiro {
+    grid-template-columns: repeat(3, min(30vw, 120px));
+    grid-template-rows: repeat(3, min(30vw, 120px));
+  }
+  .vez { font-size: 26px; }
+}

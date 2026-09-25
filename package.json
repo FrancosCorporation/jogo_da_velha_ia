@@ -1,0 +1,14 @@
+{
+  "name": "jogo-da-velha-ia",
+  "version": "2.0.0",
+  "description": "Jogo da Velha com IA (heuristica de regras + minimax) - versao web do projeto Java/Swing de 2022",
+  "main": "server.js",
+  "type": "module",
+  "license": "MIT",
+  "author": "Rodolfo Franco (FrancosCorporation)",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/logic-test.mjs"
+  },
+  "engines": { "node": ">=18" }
+}

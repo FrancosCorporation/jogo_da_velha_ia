@@ -8,7 +8,7 @@
   "author": "Rodolfo Franco (FrancosCorporation)",
   "scripts": {
     "start": "node server.js",
-    "test": "node test/logic-test.mjs"
+    "test": "node --test \"test/*.mjs\""
   },
   "engines": { "node": ">=18" }
 }

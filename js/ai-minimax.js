@@ -47,6 +47,20 @@ function minValor(tabuleiro) {
   return pior;
 }
 
+// menu de candidatos avaliados (modo LLM): cada casa vazia com o valor do minimax
+// (1 = caminho da vitória, 0 = empate, -1 = derrota), ordenado da melhor pro pior (máx 9 casas)
+export function candidatosAvaliados(tabuleiro) {
+  const cands = [];
+  for (let i = 0; i < 9; i++) {
+    if (tabuleiro[i] !== 0) continue;
+    tabuleiro[i] = JOGADOR_2;
+    const valor = minValor(tabuleiro);
+    tabuleiro[i] = 0;
+    cands.push({ casa: i, score: valor });
+  }
+  return cands.sort((a, b) => b.score - a.score);
+}
+
 // Retorna o índice da melhor jogada para o PC; empates de valor são sorteados (fiel ao original).
 export function jogadaMinimax(tabuleiro) {
   let melhorValor = -Infinity;

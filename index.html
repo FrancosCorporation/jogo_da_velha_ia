@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jogo da Velha</title>
-  <meta name="description" content="Jogo da Velha com IA: modo Player vs Player, vs PC (heurística de regras) e Impossível (minimax). Versão web do projeto Java/Swing de 2022.">
+  <meta name="description" content="Jogo da Velha com IA: PvP, PC Fácil/Médio/Difícil (heurística e minimax) e LLM rodando no navegador via WebGPU. Versão web do projeto Java/Swing de 2022.">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -28,12 +28,24 @@
 
   <div id="toast" class="toast" hidden>Movimento Indisponível!</div>
 
+  <div id="llm-box" hidden>
+    <label for="llm-modelo">Modelo:</label>
+    <select id="llm-modelo">
+      <option value="Qwen2.5-0.5B-Instruct-q4f16_1-MLC" selected>Qwen2.5-0.5B — padrão (~350MB, na sua placa)</option>
+      <option value="SmolLM2-360M-Instruct-q4f16_1-MLC">SmolLM2-360M — leve (~250MB, instantâneo)</option>
+    </select>
+    <button id="llm-carregar" type="button">Carregar modelo</button>
+    <span id="llm-status"></span>
+  </div>
+
   <div id="modal-inicio" class="modal" role="dialog" aria-modal="true" aria-labelledby="titulo-inicio">
     <div class="modal-caixa">
       <h2 id="titulo-inicio">Escolha o modo de jogo</h2>
       <button id="btn-pvp" class="btn-modal">Player vs Player</button>
-      <button id="btn-pc" class="btn-modal">Player vs PC</button>
-      <button id="btn-impossivel" class="btn-modal">Impossível (Minimax)</button>
+      <button id="btn-facil" class="btn-modal">Player vs PC Fácil</button>
+      <button id="btn-pc" class="btn-modal">Player vs PC Médio</button>
+      <button id="btn-impossivel" class="btn-modal">Player vs PC Difícil (Impossível)</button>
+      <button id="btn-llm" class="btn-modal">Player vs LLM (roda no navegador)</button>
     </div>
   </div>
 

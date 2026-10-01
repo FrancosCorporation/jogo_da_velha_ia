@@ -52,3 +52,11 @@ export function jogadaHeuristica(tabuleiro, pc = JOGADOR_2, humano = JOGADOR_1) 
   const vazias = casasVazias(tabuleiro);
   return vazias.length > 0 ? vazias[Math.floor(Math.random() * vazias.length)] : -1;
 }
+
+// modo fácil: a heurística com taxa de erro (35% joga casa vazia aleatória — erra de verdade)
+export function jogadaFacil(tabuleiro, erro = 0.35) {
+  const vazias = casasVazias(tabuleiro);
+  if (!vazias.length) return -1;
+  if (Math.random() < erro) return vazias[Math.floor(Math.random() * vazias.length)];
+  return jogadaHeuristica(tabuleiro);
+}

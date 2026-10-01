@@ -120,6 +120,21 @@ body {
 .btn-perigo { background: var(--vermelho); color: #fff; }
 .btn-perigo:hover { background: #a02020; }
 
+/* painel do LLM (visível só no modo LLM) */
+#llm-box {
+  display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: center;
+  margin: 12px auto 0; padding: 10px 14px;
+  background: rgba(20, 35, 42, .55); border: 1px solid #35505c; border-radius: 8px;
+  max-width: min(92vw, 620px);
+}
+#llm-box label { color: var(--ciano); font-weight: bold; }
+#llm-box select, #llm-box button {
+  font-family: inherit; font-size: 15px; padding: 8px 12px;
+  border: 1px solid #35505c; border-radius: 6px; background: #14232a; color: #e8f6fa; cursor: pointer;
+}
+#llm-box select:hover, #llm-box button:hover { background: #1d3540; }
+#llm-status { color: #ffd166; font-size: 14px; min-width: 120px; }
+
 @media (max-width: 520px) {
   .tabuleiro {
     grid-template-columns: repeat(3, min(30vw, 120px));

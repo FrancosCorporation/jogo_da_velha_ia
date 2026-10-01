@@ -133,6 +133,7 @@ body {
   border: 1px solid #35505c; border-radius: 6px; background: #14232a; color: #e8f6fa; cursor: pointer;
 }
 #llm-box select:hover, #llm-box button:hover { background: #1d3540; }
+#llm-box[hidden] { display: none; }
 #llm-status { color: #ffd166; font-size: 14px; min-width: 120px; }
 
 @media (max-width: 520px) {

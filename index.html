@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jogo da Velha</title>
-  <meta name="description" content="Jogo da Velha com IA: PvP, PC Fácil/Médio/Difícil (heurística e minimax) e LLM rodando no navegador via WebGPU. Versão web do projeto Java/Swing de 2022.">
+  <meta name="description" content="Jogo da Velha com IA: PvP, PC Fácil/Médio/Difícil (heurística e minimax) e LLM rodando no navegador (WebGPU ou CPU). Versão web do projeto Java/Swing de 2022.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⭕</text></svg>">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -32,7 +32,7 @@
   <div id="llm-box" hidden>
     <label for="llm-modelo">Modelo:</label>
     <select id="llm-modelo">
-      <option value="Qwen2.5-0.5B-Instruct-q4f16_1-MLC" selected>Qwen2.5-0.5B — padrão (~350MB, na sua placa)</option>
+      <option value="Qwen2.5-0.5B-Instruct-q4f16_1-MLC" selected>Qwen2.5-0.5B — padrão (~350MB, na placa ou na RAM)</option>
       <option value="SmolLM2-360M-Instruct-q4f16_1-MLC">SmolLM2-360M — leve (~250MB, instantâneo)</option>
     </select>
     <button id="llm-carregar" type="button">Carregar modelo</button>

@@ -63,7 +63,7 @@ Depois abra **http://localhost:3348** no navegador.
 
 O servidor local publica somente os caminhos do jogo definidos na allowlist de `server.js`; ele não entrega `.git`, fontes Java, arquivos de configuração ou testes. Por padrão escuta apenas em `127.0.0.1`. Para disponibilizar na rede, defina `HOST=0.0.0.0` conscientemente. O modo LLM baixa os pesos do modelo do Hugging Face na primeira utilização.
 
-Também é possível executar em container com `docker build -t jogo-da-velha .` e `docker run --rm -p 3348:3348 jogo-da-velha`.
+Também é possível executar em container com `docker build -t jogo-da-velha .` e `docker run --rm -p 127.0.0.1:3348:3348 jogo-da-velha`. A porta fica acessível apenas na própria máquina; para disponibilizar na rede, publique a porta conscientemente.
 
 > Alternativa sem Node: abra `index.html` num servidor estático qualquer (Python `http.server`,
 > Live Server do VS Code, nginx...) — a versão web é 100% estática (HTML/CSS/JS).

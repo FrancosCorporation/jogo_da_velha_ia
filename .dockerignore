@@ -1,0 +1,11 @@
+.git
+.github
+.planning
+node_modules
+test
+java
+MELHORIAS.md
+README.md
+SECURITY.md
+package*.json
+*.log

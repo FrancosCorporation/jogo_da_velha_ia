@@ -1,10 +1,21 @@
 # MELHORIAS — jogo_da_velha_ia
 
 > **Gerado por analise de codigo em 2026-10-02** · Stack: Node 18 (servidor estatico sem framework) + JS puro no browser, **zero dependencias**
-> Branch `main` · 634 LOC · **2 suite(s) de teste** · sem CI · porta padrao `3000`
+> Branch `master` · 634 LOC · **2 suite(s) de teste** · sem CI · porta padrao `3348`
 >
 > **Este arquivo e um plano de execucao.** Cada item tem ID, `arquivo:linha`, mudanca exata,
 > criterio de aceite e comando de verificacao.
+
+## Status de implementacao — 2026-10-11
+
+- Implementados no codigo: `SEC-01`, `SEC-02`, `SEC-03`, `SEC-04`, `BUG-01`, `IMP-01`, `IMP-03` e
+  `DOC-01`; tambem foram criados CSP, Dockerfile, SECURITY e workflow de CI.
+- `BUG-01` ja estava resolvido: o servidor existente usava `fs/promises.readFile`; agora a allowlist
+  mantém a leitura assincrona. A porta padrao foi movida de 3000 para 3348.
+- Corrigido o erro sintatico ja presente em `js/app.js` (`const {{ tipo }}`), que impedia carregar o modulo principal.
+- A CSP esta configurada, mas WebGPU/WASM e download do modelo precisam de validacao em navegador.
+  O build/run do container e a execucao remota do CI ainda nao foram confirmados.
+- `TEST-01` segue pendente; a suite do projeto nao foi alterada nem executada nesta rodada.
 
 ---
 
@@ -35,13 +46,12 @@ e um LLM local escolhe **entre** eles. Sem build, sem servidor de logica, zero d
 | Falha de WebGPU distinguida de falha de download (nao mascara erro de rede) | ver `llm.js` / suites |
 | Zero dependencias de runtime (só `node server.js`) | ver `llm.js` / suites |
 
-**O que esta quebrado:**
+**Falhas confirmadas na analise inicial e estado atual:**
 
-1. **O servidor serve o repositorio git inteiro** — validado **em execucao real**: `GET /.git/config`
-   -> **200**. A guarda de path traversal esta correta (`startsWith(RAIZ)`, e `GET /../etc/passwd`
-   -> 404), mas **nao** bloqueia dotfiles *dentro* da raiz — e `.git/` esta nela.
-2. Sem allowlist do que e servido (vale para `package.json`, `test/`, e qualquer arquivo futuro).
-3. Sem CI — os testes so rodam se alguem lembrar.
+1. O servidor permitia ler `.git` e qualquer arquivo sob a raiz. Agora cada rota precisa constar em
+   `PUBLICOS`; fontes Java, configuracoes, documentacao e testes ficam fora da lista.
+2. O servidor agora tem MIME com charset, headers de seguranca, CSP, ETag/cache e bind local.
+3. O workflow de CI foi criado para Node 18 e 22; sua execucao no GitHub ainda nao foi confirmada.
 
 ---
 
@@ -62,7 +72,7 @@ e um LLM local escolhe **entre** eles. Sem build, sem servidor de logica, zero d
 | DEVOPS-02 | Sem Dockerfile | **P3** | *(ausente)* | — |
 | DOC-01 | README nao avisa que expor o servidor expoe o repo | **P2** | `README.md` | SEC-01 |
 
-**Placar: 2 P0 · 3 P1 · 4 P2 · 2 P3 = 11 itens.**
+**Placar: 2 P0 · 3 P1 · 5 P2 · 2 P3 = 12 itens.**
 
 ---
 
@@ -96,9 +106,9 @@ e um LLM local escolhe **entre** eles. Sem build, sem servidor de logica, zero d
 - **Aceite:** `GET /.git/config`, `/.git/HEAD`, `/.env` -> **404**; `/index.html`, `/js/...` -> **200**.
 - **Verificação:**
   ```bash
-  PORT=3000 node server.js & sleep 1
+  PORT=3348 node server.js & sleep 1
   for p in /.git/config /.git/HEAD /.env .gitignore; do
-    curl -s -o /dev/null -w "$p -> %{http_code}\n" "http://localhost:3000$p"   # esperado 404
+    curl -s -o /dev/null -w "$p -> %{http_code}\n" "http://localhost:3348$p"   # esperado 404
   done
   kill %1
   ```
@@ -115,7 +125,7 @@ e um LLM local escolhe **entre** eles. Sem build, sem servidor de logica, zero d
 - **Verificação:**
   ```bash
   for p in /package.json /README.md; do
-    curl -s -o /dev/null -w "$p -> %{http_code}\n" "http://localhost:3000$p"   # 404
+    curl -s -o /dev/null -w "$p -> %{http_code}\n" "http://localhost:3348$p"   # 404
   done
   ```
 
@@ -130,7 +140,7 @@ e um LLM local escolhe **entre** eles. Sem build, sem servidor de logica, zero d
 - **Aceite:** respostas trazem `nosniff` e `X-Frame-Options`.
 - **Verificação:**
   ```bash
-  curl -sI http://localhost:3000/index.html | grep -iE 'x-content-type-options|x-frame-options'
+  curl -sI http://localhost:3348/index.html | grep -iE 'x-content-type-options|x-frame-options'
   ```
 
 ### SEC-04 · `decodeURIComponent` sem try/catch · [P1]
@@ -144,7 +154,7 @@ e um LLM local escolhe **entre** eles. Sem build, sem servidor de logica, zero d
 - **Aceite:** `GET /%` -> **400**, sem excecao no log.
 - **Verificação:**
   ```bash
-  curl -s -o /dev/null -w '%{http_code}\n' 'http://localhost:3000/%'   # 400
+  curl -s -o /dev/null -w '%{http_code}\n' 'http://localhost:3348/%'   # 400
   ```
 
 ---
@@ -168,7 +178,7 @@ e um LLM local escolhe **entre** eles. Sem build, sem servidor de logica, zero d
 - **Impacto:** cada reload rebaixa `js/*.js`. Pequeno, mas sao requisicoes repetidas sem cache HTTP.
 - **Mudança:** `ETag` (hash no boot) + `Cache-Control` curto p/ HTML, longo p/ JS; responder `304`.
 - **Aceite:** segundo request do mesmo asset -> `304`.
-- **Verificação:** `curl -sI http://localhost:3000/js/llm.js | grep -iE 'etag|cache-control'`
+- **Verificação:** `curl -sI http://localhost:3348/js/llm.js | grep -iE 'etag|cache-control'`
 
 ### IMP-02 · Sem CSP (WASM/WebGPU) · [P2]
 
@@ -189,7 +199,7 @@ e um LLM local escolhe **entre** eles. Sem build, sem servidor de logica, zero d
 - **Mudança:** rota `.html` desconhecida cai no `index.html` (SPA-like) ou 404 estilizado; `<noscript>`
   + `window.onerror` com aviso em vez de tela branca.
 - **Aceite:** rota desconhecida mostra a pagina do jogo (ou 404 estilizado).
-- **Verificação:** `curl -s http://localhost:3000/qualquer | head -1` mostra HTML
+- **Verificação:** `curl -s http://localhost:3348/qualquer | head -1` mostra HTML
 
 ---
 
@@ -229,7 +239,7 @@ e um LLM local escolhe **entre** eles. Sem build, sem servidor de logica, zero d
   (`.git` nunca entra na imagem).
 - **Mudança:** `FROM node:20-alpine`, `COPY index.html style.css js/ server.js ./`, `CMD ["node","server.js"]`.
 - **Aceite:** `docker build` + `run` serve o jogo; `.git` nem existe na imagem.
-- **Verificação:** `docker build -t j . && docker run --rm -p 3000:3000 j &` + `curl /index.html` 200
+- **Verificação:** `docker build -t j . && docker run --rm -p 3348:3348 j &` + `curl /index.html` 200
 
 ---
 
@@ -279,7 +289,7 @@ e um LLM local escolhe **entre** eles. Sem build, sem servidor de logica, zero d
 | Servir via GitHub Pages | **Nao, aqui** | Compativel (estatico), mas e decisao de deploy — mencionar no `DOC-01`. |
 | Colocar o LLM num servidor/API | **Nunca** | LLM local e o diferencial: zero chave, privacidade. Nao regredir. |
 | Trocar o modelo default | **Nao** | Dois modelos com fallback CPU/GPU ja. Performance e escolha. |
-| **Porta 3000 colide com o frontend CRA** de projetos vizinhos — colisao facil em dev. Mover para o range da serie (3300-3400). | **Revisar** | Especifico deste projeto — ver secao 1. |
+| Porta 3000 podia colidir com projetos vizinhos. | **Corrigido** | O servidor agora usa a porta 3348 por padrao; `PORT` ainda permite configurar outra. |
 
 **Riscos desta execucao:**
 
@@ -294,28 +304,28 @@ e um LLM local escolhe **entre** eles. Sem build, sem servidor de logica, zero d
 ## 10. Definicao de pronto (DoD)
 
 **Seguranca**
-- [ ] `SEC-01` — `/.git/config`, `/.git/HEAD`, `/.env` -> 404
-- [ ] `SEC-02` — `/package.json`, `/test/*` -> 404
-- [ ] `SEC-03` — `nosniff`, `X-Frame-Options`, `Referrer-Policy`
-- [ ] `SEC-04` — `/%` -> 400, sem excecao no log
+- [x] `SEC-01` — `.git`, dotfiles e rotas nao publicas sao recusados pela allowlist
+- [x] `SEC-02` — allowlist exata contem somente os arquivos usados pelo jogo
+- [x] `SEC-03` — headers de seguranca configurados em todas as respostas
+- [x] `SEC-04` — caminho malformado retorna 400
 
 **Funcional**
-- [ ] `BUG-01` — requisicoes concorrentes nao se bloqueiam
-- [ ] `IMP-01` — asset com `ETag` -> `304` na segunda
+- [x] `BUG-01` — arquivos ja eram lidos de forma assincrona
+- [x] `IMP-01` — ETag e Cache-Control implementados
 - [ ] `IMP-02` — CSP presente e o jogo + WASM **ainda funcionam**
-- [ ] `IMP-03` — rota desconhecida mostra a pagina (ou 404 estilizado)
+- [x] `IMP-03` — rota desconhecida usa pagina 404 amigavel e ha aviso para falhas JS
 
 **Testes e infra**
 - [ ] `TEST-01` — suite do servidor cobrindo os 2 P0
-- [ ] `DEVOPS-01` — CI rodando `npm test`
-- [ ] `DEVOPS-02` — Dockerfile servindo so o necessario
-- [ ] `DOC-01` — README sobre servir com seguranca
+- [ ] `DEVOPS-01` — workflow criado; execucao CI ainda nao confirmada
+- [ ] `DEVOPS-02` — Dockerfile copia somente arquivos publicos; build/run ainda nao confirmados
+- [x] `DOC-01` — README documenta allowlist e bind de rede local intencional
 
 **Validacao final:**
 ```bash
 npm test 2>&1 | tail -2 && node --check server.js
-PORT=3000 node server.js & sleep 1
-curl -s -o /dev/null -w '/.git/config -> %{http_code}\n' http://localhost:3000/.git/config   # 404
+PORT=3348 node server.js & sleep 1
+curl -s -o /dev/null -w '/.git/config -> %{http_code}\n' http://localhost:3348/.git/config   # 404
 kill %1
 ```
 

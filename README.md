@@ -53,12 +53,17 @@ uma **LLM de verdade** — mas tudo rodando na sua própria máquina:
 Requer [Node.js 18+](https://nodejs.org/). Sem dependências externas — o projeto roda com Node puro:
 
 ```bash
-npm install   # no-op (zero dependências), mantido por convenção
-npm start     # abre o servidor em http://localhost:3000
+npm ci         # instala a árvore sem dependências externas
+npm start     # abre o servidor em http://localhost:3348
+npm run check # verifica a sintaxe dos arquivos JavaScript
 npm test      # roda 27 testes (lógica + modos + LLM, inclui a seleção de motor GPU/CPU)
 ```
 
-Depois abra **http://localhost:3000** no navegador.
+Depois abra **http://localhost:3348** no navegador.
+
+O servidor local publica somente os caminhos do jogo definidos na allowlist de `server.js`; ele não entrega `.git`, fontes Java, arquivos de configuração ou testes. Por padrão escuta apenas em `127.0.0.1`. Para disponibilizar na rede, defina `HOST=0.0.0.0` conscientemente. O modo LLM baixa os pesos do modelo do Hugging Face na primeira utilização.
+
+Também é possível executar em container com `docker build -t jogo-da-velha .` e `docker run --rm -p 3348:3348 jogo-da-velha`.
 
 > Alternativa sem Node: abra `index.html` num servidor estático qualquer (Python `http.server`,
 > Live Server do VS Code, nginx...) — a versão web é 100% estática (HTML/CSS/JS).

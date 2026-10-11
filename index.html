@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <noscript><p class="aviso-js">Ative o JavaScript no navegador para jogar.</p></noscript>
+  <p id="erro-js" class="aviso-js" role="alert" hidden></p>
   <header class="hud">
     <h1 id="vez" class="vez vez-j1">Jogador 1</h1>
   </header>
@@ -59,6 +61,7 @@
     </div>
   </div>
 
+  <script src="/js/erro.js"></script>
   <script type="module" src="js/app.js"></script>
 </body>
 </html>

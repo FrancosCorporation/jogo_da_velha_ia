@@ -1,7 +1,7 @@
 # Jogo da Velha IA
 
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES2022-yellow?logo=javascript&logoColor=white)
-![Node](https://img.shields.io/badge/node-%3E%3D18-green?logo=node.js&logoColor=white)
+![Node](https://img.shields.io/badge/node-%3E%3D22-green?logo=node.js&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Status](https://img.shields.io/badge/status-ativo%20(vers%C3%A3o%20web)-blue)
 ![Tests](https://img.shields.io/badge/testes-27%2F27%20passando-brightgreen)
@@ -50,7 +50,7 @@ uma **LLM de verdade** — mas tudo rodando na sua própria máquina:
 
 ## Instalação e execução
 
-Requer [Node.js 18+](https://nodejs.org/). Sem dependências externas — o projeto roda com Node puro:
+Requer [Node.js 22+](https://nodejs.org/). Sem dependências externas — o projeto roda com Node puro:
 
 ```bash
 npm ci         # instala a árvore sem dependências externas
